@@ -24,7 +24,7 @@ namespace FilmProject.Controllers
 
         [HttpGet("filtered")]
         public ActionResult<List<DtoFilteredFilms>> GetFilteredFilms(
-            [FromQuery] FilterType? filterType = null, 
+            [FromQuery] FilterType filterType = FilterType.None, 
             [FromQuery] int? year = null,    
             [FromQuery] string movieName = null,
             [FromQuery] int? minDuration = null,

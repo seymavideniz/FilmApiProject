@@ -31,7 +31,7 @@ public class FilmService
     }
 
     public List<DtoFilteredFilms> GetFilteredFilms(FilterType? filterType = null, int? year = null, string movieName = null, int? minDuration = null,
-        DateOnly? releaseDate = null, int pageNumber = 1, int pageSize = 3)
+        DateOnly? releaseDate = null, int pageNumber = 1, int pageSize = 3) //düzelt.
     {
         var query = _context.Films.AsQueryable();
 
@@ -45,11 +45,11 @@ public class FilmService
             query = query.Where(f => f.Duration >= minDuration);
         }
 
-        if (filterType.HasValue && year.HasValue)
+        if (filterType.HasValue && year.HasValue) //düzelt.
         {
             if (filterType == FilterType.Before)
             {
-                query = query.Where(f => f.ReleaseDate.Year < year.Value);
+                query = query.Where(f => f.ReleaseDate.Year <= year.Value);
             }
 
             if (filterType == FilterType.After)
