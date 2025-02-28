@@ -23,23 +23,9 @@ namespace FilmProject.Controllers
         }
 
         [HttpGet("filtered")]
-        public ActionResult<List<DtoFilteredFilms>> GetFilteredFilms(
-            [FromQuery] FilterType filterType = FilterType.None, 
-            [FromQuery] int? year = null,    
-            [FromQuery] string movieName = null,
-            [FromQuery] int? minDuration = null,
-            [FromQuery] DateOnly? releaseDate = null,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 3)
+        public ActionResult<List<DtoFilteredFilms>> GetFilteredFilms([FromQuery] DtoFilmsQuery filmDto)
         {
-              
-              var films = _filmService.GetFilteredFilms(filterType, year, movieName, minDuration, releaseDate, page, pageSize);
-              
-            if (films == null)
-            {
-                return NotFound();
-            }
-
+            var films = _filmService.GetFilteredFilms(filmDto);
             return Ok(films);
         }
 
@@ -61,7 +47,6 @@ namespace FilmProject.Controllers
         public IActionResult Delete(int id)
         {
             _filmService.DeleteFilm(id);
-
             return Ok("Film deleted successfully.");
         }
     }

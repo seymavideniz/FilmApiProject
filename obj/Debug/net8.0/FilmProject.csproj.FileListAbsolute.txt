@@ -133,3 +133,4 @@
 /Users/seymavideniz/RiderProjects/FilmProject/FilmProject/obj/Debug/net8.0/FilmProject.pdb
 /Users/seymavideniz/RiderProjects/FilmProject/FilmProject/obj/Debug/net8.0/FilmProject.genruntimeconfig.cache
 /Users/seymavideniz/RiderProjects/FilmProject/FilmProject/obj/Debug/net8.0/ref/FilmProject.dll
+/Users/seymavideniz/RiderProjects/FilmProject/FilmProject/obj/Debug/net8.0/FilmProject.sourcelink.json

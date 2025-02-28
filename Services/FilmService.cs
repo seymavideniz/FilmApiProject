@@ -30,39 +30,33 @@ public class FilmService
         }).ToList();
     }
 
-    public List<DtoFilteredFilms> GetFilteredFilms(FilterType? filterType = null, int? year = null, string movieName = null, int? minDuration = null,
-        DateOnly? releaseDate = null, int pageNumber = 1, int pageSize = 3) //düzelt.
+    public List<DtoFilteredFilms> GetFilteredFilms(DtoFilmsQuery dto)
     {
         var query = _context.Films.AsQueryable();
 
-        if (!string.IsNullOrEmpty(movieName))
+        if (!string.IsNullOrEmpty(dto.MovieName))
         {
-            query = query.Where(f => f.Title.Contains(movieName));
+            query = query.Where(f => f.Title.Contains(dto.MovieName));
         }
 
-        if (minDuration.HasValue)
+        if (dto.MinDuration.HasValue)
         {
-            query = query.Where(f => f.Duration >= minDuration);
+            query = query.Where(f => f.Duration >= dto.MinDuration.Value);
         }
 
-        if (filterType.HasValue && year.HasValue) //düzelt.
+        if (dto.FilterType == FilterType.Before)
         {
-            if (filterType == FilterType.Before)
-            {
-                query = query.Where(f => f.ReleaseDate.Year <= year.Value);
-            }
-
-            if (filterType == FilterType.After)
-            {
-                query = query.Where(f => f.ReleaseDate.Year >= year.Value);
-            }
+            query = query.Where(f => f.ReleaseDate.Year <= dto.Year);
+        }
+        else if (dto.FilterType == FilterType.After)
+        {
+            query = query.Where(f => f.ReleaseDate.Year >= dto.Year);
         }
 
+        var skipCount = (dto.Page - 1) * dto.PageSize;
+        var films = query.Skip(skipCount).Take(dto.PageSize).ToList();
 
-        var skipCount = (pageNumber - 1) * pageSize;
-        var films = query.Skip(skipCount).Take(pageSize).ToList();
-
-        var filteredFilmsDto = films.Select(f => new DtoFilteredFilms
+        return films.Select(f => new DtoFilteredFilms
         {
             FilmId = f.Id,
             Title = f.Title,
@@ -74,9 +68,8 @@ public class FilmService
             Cast = f.Cast,
             Rating = f.Rating
         }).ToList();
-
-        return filteredFilmsDto;
     }
+
 
     public void AddFilm(DtoAddFilm filmDto)
     {
