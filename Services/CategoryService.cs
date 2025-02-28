@@ -42,17 +42,16 @@ namespace FilmProject.Services
             return category;
         }
 
-        public bool DeleteCategory(Category category)
+        public void DeleteCategory(Category category)
         {
-            var categoryCategory = _context.Categories.FirstOrDefault(c => c.CategoryId == category.CategoryId);
-            if (category == null)
+            var existCategory = _context.Categories.FirstOrDefault(c => c.CategoryId == category.CategoryId);
+            if (existCategory == null)
             {
-                return false;
+                return;
             }
 
-            _context.Categories.Remove(category);
+            _context.Categories.Remove(existCategory);
             _context.SaveChanges();
-            return true;
         }
     }
 }
