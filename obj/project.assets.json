@@ -3373,25 +3373,26 @@
     ]
   },
   "packageFolders": {
-    "/Users/seymavideniz/.nuget/packages/": {}
+    "C:\\Users\\engin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/seymavideniz/RiderProjects/FilmProject/FilmProject/FilmProject.csproj",
+      "projectUniqueName": "C:\\qnq-acamdey-projects\\seyma-project\\FilmProject.csproj",
       "projectName": "FilmProject",
-      "projectPath": "/Users/seymavideniz/RiderProjects/FilmProject/FilmProject/FilmProject.csproj",
-      "packagesPath": "/Users/seymavideniz/.nuget/packages/",
-      "outputPath": "/Users/seymavideniz/RiderProjects/FilmProject/FilmProject/obj/",
+      "projectPath": "C:\\qnq-acamdey-projects\\seyma-project\\FilmProject.csproj",
+      "packagesPath": "C:\\Users\\engin\\.nuget\\packages\\",
+      "outputPath": "C:\\qnq-acamdey-projects\\seyma-project\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/seymavideniz/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\engin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://nuget.pkg.github.com/CloudGCS/index.json": {}
       },
       "frameworks": {
         "net8.0": {
@@ -3456,7 +3457,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.405/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
