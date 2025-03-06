@@ -1,8 +1,7 @@
-using FilmProject.Models;
 using FilmProject.Database;
-using Microsoft.Extensions.Logging.Abstractions;
+using FilmProject.Models;
 
-namespace FilmProject.Services
+namespace FilmProject.Services.Concrete
 {
     public class CategoryService
     {

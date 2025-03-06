@@ -1,8 +1,6 @@
-using FilmProject.Models;
 using Microsoft.AspNetCore.Mvc;
-using FilmProject.Services;
-using System.Threading.Tasks;
 using FilmProject.DTO;
+using FilmProject.Services.Abstract;
 
 namespace FilmProject.Controllers;
 
@@ -11,9 +9,9 @@ namespace FilmProject.Controllers;
 
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public UserController(UserService userService)
+    public UserController(IUserService userService)
     {
         _userService = userService;
     }

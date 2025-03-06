@@ -20,6 +20,6 @@ public class User
     public string PasswordHash { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow; // DateTime.UtcNow'a gerek yok, update edildiğinde biz kendimiz elle vereceğiz.
+    // TEST EDİLMEDEN LÜTFEN KULLANMAYINIZ!!!!!!
 }

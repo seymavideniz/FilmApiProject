@@ -1,12 +1,12 @@
-using FilmProject.Models;
 using FilmProject.Database;
 using FilmProject.DTO;
-using Microsoft.AspNetCore.Identity;
+using FilmProject.Models;
+using FilmProject.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 
-namespace FilmProject.Services;
+namespace FilmProject.Services.Concrete;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly AppDbContext _context;
 
@@ -23,7 +23,6 @@ public class UserService
         {
             return "Email already exists";  
         }
-        
         var newUser = new User
         {
             FirstName = dtoSignUp.Name,
@@ -31,7 +30,7 @@ public class UserService
             Email = dtoSignUp.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dtoSignUp.Password),
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow, // Updated gerek yok çünkü update edilmiyor şuan sadece create ediliyor
         };
 
         _context.User.Add(newUser);
@@ -54,5 +53,11 @@ public class UserService
             return "Incorrect password";
         }
         return "Sign in successful!";
+    }
+
+    public async Task<string> UpdateUserAsync()
+    {
+        // burada kullanıcıdan adını soyadını almanı istiyorum ve onları update etmeni istiyorum.
+        return null;
     }
 }

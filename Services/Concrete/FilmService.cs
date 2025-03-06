@@ -1,9 +1,9 @@
 using FilmProject.Database;
-using FilmProject.Models;
 using FilmProject.DTO;
 using FilmProject.Enum;
+using FilmProject.Models;
 
-namespace FilmProject.Services;
+namespace FilmProject.Services.Concrete;
 
 public class FilmService
 {
@@ -53,14 +53,14 @@ public class FilmService
             query = query.Where(f => f.ReleaseDate.Year >= dto.Year);
         }
 
-        var films = query.ToList();
+        // var films = query.ToList();
+        //
+        // if (!string.IsNullOrEmpty(dto.MovieName))
+        // {
+        //     films = films.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase)).ToList();
+        // }
 
-        if (!string.IsNullOrEmpty(dto.MovieName))
-        {
-            films = films.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-
+        List<Film> films; // orderBy'ı query üzerinden yapacaksın ki sorgu veritabanında çalışsın
         var skipCount = (dto.Page - 1) * dto.PageSize;
         films = query.Skip(skipCount).Take(dto.PageSize).ToList();
 
