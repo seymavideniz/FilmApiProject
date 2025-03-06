@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     }
     public DbSet<Film> Films { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<User> User { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     { 

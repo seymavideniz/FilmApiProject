@@ -5,8 +5,9 @@ using FilmProject.Services;
 
 namespace FilmProject.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
+
 
 public class CategoryController : ControllerBase
 {

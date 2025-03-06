@@ -53,8 +53,17 @@ public class FilmService
             query = query.Where(f => f.ReleaseDate.Year >= dto.Year);
         }
 
+        var films = query.ToList();
+
+        if (!string.IsNullOrEmpty(dto.MovieName))
+        {
+            films = films.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+
         var skipCount = (dto.Page - 1) * dto.PageSize;
-        var films = query.Skip(skipCount).Take(dto.PageSize).ToList();
+        films = query.Skip(skipCount).Take(dto.PageSize).ToList();
+
 
         return films.Select(f => new DtoFilteredFilms
         {

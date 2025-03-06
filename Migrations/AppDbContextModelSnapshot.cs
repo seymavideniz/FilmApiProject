@@ -109,6 +109,39 @@ namespace FilmProject.Migrations
                     b.ToTable("Films");
                 });
 
+            modelBuilder.Entity("FilmProject.Models.User", b =>
+                {
+                    b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Guid");
+
+                    b.ToTable("User");
+                });
+
             modelBuilder.Entity("FilmProject.Models.Film", b =>
                 {
                     b.HasOne("FilmProject.Models.Category", "Category")
