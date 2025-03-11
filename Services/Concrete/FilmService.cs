@@ -2,10 +2,11 @@ using FilmProject.Database;
 using FilmProject.DTO;
 using FilmProject.Enum;
 using FilmProject.Models;
+using FilmProject.Services.Abstract;
 
 namespace FilmProject.Services.Concrete;
 
-public class FilmService
+public class FilmService : IFilmService
 {
     private readonly AppDbContext _context;
 
@@ -53,16 +54,20 @@ public class FilmService
             query = query.Where(f => f.ReleaseDate.Year >= dto.Year);
         }
 
-        // var films = query.ToList();
-        //
-        // if (!string.IsNullOrEmpty(dto.MovieName))
-        // {
-        //     films = films.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase)).ToList();
-        // }
+        if (!string.IsNullOrEmpty(dto.MovieName))
+        {
+            query = query.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase));
+        }
+        else
+        {
+            query = query.OrderBy(f => f.Title);
+            
+            
+            
+        }
 
-        List<Film> films; // orderBy'ı query üzerinden yapacaksın ki sorgu veritabanında çalışsın
         var skipCount = (dto.Page - 1) * dto.PageSize;
-        films = query.Skip(skipCount).Take(dto.PageSize).ToList();
+        var films = query.Skip(skipCount).Take(dto.PageSize).ToList();
 
 
         return films.Select(f => new DtoFilteredFilms

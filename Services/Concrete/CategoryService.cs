@@ -1,9 +1,10 @@
 using FilmProject.Database;
 using FilmProject.Models;
+using FilmProject.Services.Abstract;
 
 namespace FilmProject.Services.Concrete
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly AppDbContext _context;
 

@@ -1,6 +1,6 @@
 using FilmProject.Database;
-using FilmProject.Services;
 using FilmProject.Services.Concrete;
+using FilmProject.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<CategoryService>();
+
+builder.Services.AddScoped<IFilmService ,FilmService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService ,CategoryService>();
+builder.Services.AddScoped<IFilmDetailsService, FilmDetailsService>();
 
 builder.Services.AddDbContext<AppDbContext>(oB =>
 {

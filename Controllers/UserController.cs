@@ -6,7 +6,6 @@ namespace FilmProject.Controllers;
 
 [ApiController]
 [Route("api/user")]
-
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -42,5 +41,22 @@ public class UserController : ControllerBase
         }
 
         return BadRequest(result);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(Guid id, [FromBody] DtoUpdateUser dtoUpdateUser)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var result = await _userService.UpdateUserAsync(id, dtoUpdateUser);
+        if (result == "User not found!")
+        {
+            return NotFound(result);
+        }
+
+        return Ok(result);
     }
 }

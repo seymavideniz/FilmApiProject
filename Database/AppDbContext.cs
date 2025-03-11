@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
     public DbSet<Film> Films { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<User> User { get; set; }
+    
+    public DbSet<FilmDetails> FilmDetails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     { 
@@ -32,6 +34,10 @@ public class AppDbContext : DbContext
             new Category { CategoryId = 4, CategoryName = "Horror" },
             new Category { CategoryId = 5, CategoryName = "Romance" }
         );
+
+        modelBuilder.Entity<FilmDetails>()
+            .HasIndex(fd => new { fd.UserId, fd.MovieId })
+            .IsUnique();
         
         base.OnModelCreating(modelBuilder);
     }

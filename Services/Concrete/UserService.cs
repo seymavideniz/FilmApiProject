@@ -21,8 +21,9 @@ public class UserService : IUserService
 
         if (existingUser != null)
         {
-            return "Email already exists";  
+            return "Email already exists";
         }
+
         var newUser = new User
         {
             FirstName = dtoSignUp.Name,
@@ -30,7 +31,6 @@ public class UserService : IUserService
             Email = dtoSignUp.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dtoSignUp.Password),
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow, // Updated gerek yok çünkü update edilmiyor şuan sadece create ediliyor
         };
 
         _context.User.Add(newUser);
@@ -52,12 +52,24 @@ public class UserService : IUserService
         {
             return "Incorrect password";
         }
+
         return "Sign in successful!";
     }
 
-    public async Task<string> UpdateUserAsync()
+    public async Task<string> UpdateUserAsync(Guid userId, DtoUpdateUser dtoUpdateUser)
     {
-        // burada kullanıcıdan adını soyadını almanı istiyorum ve onları update etmeni istiyorum.
-        return null;
+        var user = await _context.User.FindAsync(userId);
+
+        if (user == null)
+        {
+            return "User not found!";
+        }
+        
+        user.FirstName = dtoUpdateUser.FirstName;
+        user.LastName = dtoUpdateUser.LastName;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return "User updated successfully";
     }
 }

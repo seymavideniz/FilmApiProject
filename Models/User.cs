@@ -1,25 +1,27 @@
 namespace FilmProject.Models;
+
 using System.ComponentModel.DataAnnotations;
 
 public class User
 {
-    [Key]
+    [Key] 
     public Guid Guid { get; set; }
-    
-    [Required]
+
+    [Required] 
     public string FirstName { get; set; }
-    
-    [Required]
+
+    [Required] 
     public string LastName { get; set; }
-    
-    [Required]
-    [EmailAddress]
+
+    [Required] 
+    [EmailAddress] 
     public string Email { get; set; }
-    
-    [Required]
+
+    [Required] 
     public string PasswordHash { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow; // DateTime.UtcNow'a gerek yok, update edildiğinde biz kendimiz elle vereceğiz.
+
+    public DateTime UpdatedAt { get; set; }
     // TEST EDİLMEDEN LÜTFEN KULLANMAYINIZ!!!!!!
 }
