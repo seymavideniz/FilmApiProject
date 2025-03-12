@@ -46,10 +46,10 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] DtoUpdateUser dtoUpdateUser)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
+        // if (!ModelState.IsValid)
+        // {
+        //     return BadRequest(ModelState);
+        // }
 
         var result = await _userService.UpdateUserAsync(id, dtoUpdateUser);
         if (result == "User not found!")

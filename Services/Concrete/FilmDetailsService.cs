@@ -11,7 +11,7 @@ public class FilmDetailsService : IFilmDetailsService
 
     public FilmDetailsService(AppDbContext context)
     {
-        context = context;
+        context = context; // ???
     }
 
     public void AddFilmDetails(FilmDetails filmDetails)
@@ -23,19 +23,20 @@ public class FilmDetailsService : IFilmDetailsService
     
     public void AddRating(DtoAddRating ratingDto)
     {
-        var existingRating = _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.MovieId == ratingDto.MovieId);
+        var existingRating = _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.MovieId == ratingDto.FimId);
 
         if (existingRating != null)
         {
             existingRating.Rating = ratingDto.Rating;
             existingRating.Note = ratingDto.Note;
+            //burada bir şeyler eksik gibi nedenini bulup bana söylemeni istiyorum
         }
         else
         {
             var newRating = new FilmDetails()
             {
                 UserId = ratingDto.UserId,
-                MovieId = ratingDto.MovieId,
+                MovieId = ratingDto.FimId,
                 Rating = ratingDto.Rating,
                 Note = ratingDto.Note,
             };

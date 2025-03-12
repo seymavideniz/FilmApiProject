@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations;
 public class FilmDetails
 {
     [Key]
-    public Guid Guid { get; set; }
+    public Guid Id { get; set; }
     
     [Required]
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     
     [Required]
     public int MovieId { get; set; }
@@ -20,4 +20,6 @@ public class FilmDetails
     public string? Note { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    //User ve Film İlişkilendirmesi şuanda yok bunu eklemenin bir yolunu bul
 }

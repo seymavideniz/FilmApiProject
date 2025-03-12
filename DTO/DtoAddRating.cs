@@ -5,10 +5,10 @@ namespace FilmProject.DTO;
 public class DtoAddRating
 {
     [Required] 
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     
     [Required] 
-    public int MovieId { get; set; }
+    public int FimId { get; set; }
     
     [Required] 
     [Range(1, 10)]

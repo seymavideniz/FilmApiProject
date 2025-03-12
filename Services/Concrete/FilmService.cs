@@ -56,14 +56,11 @@ public class FilmService : IFilmService
 
         if (!string.IsNullOrEmpty(dto.MovieName))
         {
-            query = query.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase));
+            query = query.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase)); //index of vedalaşalım artık
         }
         else
         {
             query = query.OrderBy(f => f.Title);
-            
-            
-            
         }
 
         var skipCount = (dto.Page - 1) * dto.PageSize;

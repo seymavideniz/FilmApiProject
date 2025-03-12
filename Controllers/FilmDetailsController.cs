@@ -1,6 +1,5 @@
 using FilmProject.DTO;
 using FilmProject.Services.Abstract;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmProject.Controllers;
@@ -14,7 +13,7 @@ public class FilmDetailsController : ControllerBase
 
     public FilmDetailsController(IFilmDetailsService filmDetailsService)
     {
-        filmDetailsService = filmDetailsService;
+        filmDetailsService = filmDetailsService; // ???
     }
 
     [HttpPost("GetFilmDetails")]

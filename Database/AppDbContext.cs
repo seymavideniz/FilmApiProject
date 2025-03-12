@@ -39,6 +39,8 @@ public class AppDbContext : DbContext
             .HasIndex(fd => new { fd.UserId, fd.MovieId })
             .IsUnique();
         
+        // filmDetails user ve film tablosu ile ilişkilendirilmeli
+        
         base.OnModelCreating(modelBuilder);
     }
 }
