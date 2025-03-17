@@ -2,6 +2,7 @@ using FilmProject.DTO;
 using FilmProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using FilmProject.Services;
+using FilmProject.Services.Abstract;
 using FilmProject.Services.Concrete;
 
 namespace FilmProject.Controllers;
@@ -12,9 +13,9 @@ namespace FilmProject.Controllers;
 
 public class CategoryController : ControllerBase
 {
-    private readonly CategoryService _categoryService;
+    private readonly ICategoryService _categoryService;
 
-    public CategoryController(CategoryService categoryService)
+    public CategoryController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
     }
@@ -47,7 +48,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult AddCategory(DtoCategory categoryDto)
+    public ActionResult AddCategory(DtoAddCategory categoryDto)
     { 
         var category = new Category
         {

@@ -18,7 +18,7 @@ public class AppDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(
-            "User ID=myuser;Password=mypassword;Host=localhost;Port=5432;Database=mydatabase;Pooling=true;Maximum Pool Size=5;");
+            "User ID=myuser;Password=mypassword;Host=localhost;Port=5433;Database=mydatabase;Pooling=true;Maximum Pool Size=5;");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,16 +35,6 @@ public class AppDbContext : DbContext
             new Category { CategoryId = 4, CategoryName = "Horror" },
             new Category { CategoryId = 5, CategoryName = "Romance" }
         );
-
-          modelBuilder.Entity<FilmDetails>()
-            .HasOne(fd => fd.User)
-            .WithOne(u => u.Ratings)
-            .HasForeignKey<FilmDetails>(fd => fd.UserId);
-
-        modelBuilder.Entity<FilmDetails>()
-            .HasOne(fd => fd.Film)
-            .WithMany(f => f.FilmDetails)
-            .HasForeignKey(fd => fd.MovieId);
         
         base.OnModelCreating(modelBuilder);
     }

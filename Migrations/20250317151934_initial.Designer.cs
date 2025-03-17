@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FilmProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250302124218_AddUser")]
-    partial class AddUser
+    [Migration("20250317151934_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,11 +71,11 @@ namespace FilmProject.Migrations
 
             modelBuilder.Entity("FilmProject.Models.Film", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("FilmID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FilmID"));
 
                     b.Property<string>("Cast")
                         .IsRequired()
@@ -105,16 +105,49 @@ namespace FilmProject.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("FilmID");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Films");
                 });
 
+            modelBuilder.Entity("FilmProject.Models.FilmDetails", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FilmDetails");
+                });
+
             modelBuilder.Entity("FilmProject.Models.User", b =>
                 {
-                    b.Property<Guid>("Guid")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -133,14 +166,14 @@ namespace FilmProject.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Guid");
+                    b.HasKey("Id");
 
                     b.ToTable("User");
                 });
@@ -154,6 +187,35 @@ namespace FilmProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FilmProject.Models.FilmDetails", b =>
+                {
+                    b.HasOne("FilmProject.Models.Film", "Film")
+                        .WithMany("FilmDetails")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FilmProject.Models.User", "User")
+                        .WithMany("FilmDetails")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Film");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FilmProject.Models.Film", b =>
+                {
+                    b.Navigation("FilmDetails");
+                });
+
+            modelBuilder.Entity("FilmProject.Models.User", b =>
+                {
+                    b.Navigation("FilmDetails");
                 });
 #pragma warning restore 612, 618
         }

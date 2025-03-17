@@ -137,15 +137,14 @@ namespace FilmProject.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("FilmDetails");
                 });
 
             modelBuilder.Entity("FilmProject.Models.User", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -171,7 +170,7 @@ namespace FilmProject.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("User");
                 });
@@ -196,8 +195,8 @@ namespace FilmProject.Migrations
                         .IsRequired();
 
                     b.HasOne("FilmProject.Models.User", "User")
-                        .WithOne("Ratings")
-                        .HasForeignKey("FilmProject.Models.FilmDetails", "UserId")
+                        .WithMany("FilmDetails")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -213,8 +212,7 @@ namespace FilmProject.Migrations
 
             modelBuilder.Entity("FilmProject.Models.User", b =>
                 {
-                    b.Navigation("Ratings")
-                        .IsRequired();
+                    b.Navigation("FilmDetails");
                 });
 #pragma warning restore 612, 618
         }

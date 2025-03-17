@@ -35,11 +35,6 @@ public class FilmService : IFilmService
     {
         var query = _context.Films.AsQueryable();
 
-        if (!string.IsNullOrEmpty(dto.MovieName))
-        {
-            query = query.Where(f => f.Title.Contains(dto.MovieName));
-        }
-
         if (dto.MinDuration.HasValue)
         {
             query = query.Where(f => f.Duration >= dto.MinDuration.Value);
@@ -54,12 +49,7 @@ public class FilmService : IFilmService
             query = query.Where(f => f.ReleaseDate.Year >= dto.Year);
         }
 
-        if (!string.IsNullOrEmpty(dto.MovieName))
-        {
-            query = query.OrderBy(f => f.Title.Contains(dto.MovieName) ? 0 : 1)
-                .ThenBy(f => f.Title);
-        }
-        else
+        if (dto.SortByMovieName)
         {
             query = query.OrderBy(f => f.Title);
         }

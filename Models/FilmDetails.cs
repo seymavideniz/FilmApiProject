@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace FilmProject.Models;
 
 using System.ComponentModel.DataAnnotations;
@@ -22,6 +24,9 @@ public class FilmDetails
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdateAt { get; set; }
 
+    [ForeignKey(nameof(UserId))]
     public User User { get; set; } // foreign key
+    
+    [ForeignKey(nameof(MovieId))]
     public Film Film { get; set; } // foreign key
 }

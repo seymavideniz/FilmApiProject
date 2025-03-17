@@ -19,8 +19,6 @@ builder.Services.AddDbContext<AppDbContext>(oB =>
     oB.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<FilmService>();
-
 var app = builder.Build();
 
 app.MapControllers();
