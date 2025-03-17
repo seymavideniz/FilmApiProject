@@ -2,7 +2,7 @@ namespace FilmProject.Models
 {
     public class Film
     {
-        public int Id { get; set; }
+        public int FilmID { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Cast { get; set; }
@@ -14,5 +14,8 @@ namespace FilmProject.Models
 
         public int CategoryId { get; set; } // foreign key
         public Category Category { get; set; }
+        
+        public ICollection<FilmDetails> FilmDetails { get; set; }  
+
     }
 }

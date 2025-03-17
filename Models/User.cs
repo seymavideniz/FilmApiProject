@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 public class User
 {
     [Key] 
-    public Guid Guid { get; set; }
+    public Guid ID { get; set; }
 
     [Required] 
     public string FirstName { get; set; }
@@ -23,4 +23,6 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; }
+    
+    public FilmDetails Ratings { get; set; }
 }

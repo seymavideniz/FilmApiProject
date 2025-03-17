@@ -13,7 +13,7 @@ public class FilmDetailsController : ControllerBase
 
     public FilmDetailsController(IFilmDetailsService filmDetailsService)
     {
-        filmDetailsService = filmDetailsService; // ???
+        _filmDetailsService = filmDetailsService;
     }
 
     [HttpPost("GetFilmDetails")]

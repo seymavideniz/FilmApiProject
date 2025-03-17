@@ -8,7 +8,7 @@ public class DtoAddRating
     public Guid UserId { get; set; }
     
     [Required] 
-    public int FimId { get; set; }
+    public int FilmId { get; set; }
     
     [Required] 
     [Range(1, 10)]

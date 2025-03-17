@@ -5,13 +5,14 @@ using FilmProject.Services.Abstract;
 
 namespace FilmProject.Services.Concrete;
 
-public class FilmDetailsService : IFilmDetailsService
+public class
+    FilmDetailsService : IFilmDetailsService
 {
     private readonly AppDbContext _context;
 
     public FilmDetailsService(AppDbContext context)
     {
-        context = context; // ???
+        _context = context;
     }
 
     public void AddFilmDetails(FilmDetails filmDetails)
@@ -20,27 +21,29 @@ public class FilmDetailsService : IFilmDetailsService
         _context.SaveChanges();
     }
 
-    
+
     public void AddRating(DtoAddRating ratingDto)
     {
-        var existingRating = _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.MovieId == ratingDto.FimId);
+        var existingRating =
+            _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.MovieId == ratingDto.FilmId);
 
         if (existingRating != null)
         {
             existingRating.Rating = ratingDto.Rating;
             existingRating.Note = ratingDto.Note;
-            //burada bir şeyler eksik gibi nedenini bulup bana söylemeni istiyorum
+            existingRating.UpdateAt = DateTime.UtcNow;
         }
         else
         {
             var newRating = new FilmDetails()
             {
                 UserId = ratingDto.UserId,
-                MovieId = ratingDto.FimId,
+                MovieId = ratingDto.FilmId,
                 Rating = ratingDto.Rating,
                 Note = ratingDto.Note,
+                CreatedAt = DateTime.UtcNow,
             };
-            
+
             _context.FilmDetails.Add(newRating);
         }
 

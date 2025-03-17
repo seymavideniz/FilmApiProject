@@ -68,11 +68,11 @@ namespace FilmProject.Migrations
 
             modelBuilder.Entity("FilmProject.Models.Film", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("FilmID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FilmID"));
 
                     b.Property<string>("Cast")
                         .IsRequired()
@@ -102,7 +102,7 @@ namespace FilmProject.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("FilmID");
 
                     b.HasIndex("CategoryId");
 
@@ -111,7 +111,7 @@ namespace FilmProject.Migrations
 
             modelBuilder.Entity("FilmProject.Models.FilmDetails", b =>
                 {
-                    b.Property<Guid>("Guid")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -127,12 +127,17 @@ namespace FilmProject.Migrations
                     b.Property<double>("Rating")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Guid");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.HasIndex("UserId", "MovieId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("FilmDetails");
@@ -140,7 +145,7 @@ namespace FilmProject.Migrations
 
             modelBuilder.Entity("FilmProject.Models.User", b =>
                 {
-                    b.Property<Guid>("Guid")
+                    b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -166,7 +171,7 @@ namespace FilmProject.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Guid");
+                    b.HasKey("ID");
 
                     b.ToTable("User");
                 });
@@ -180,6 +185,36 @@ namespace FilmProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FilmProject.Models.FilmDetails", b =>
+                {
+                    b.HasOne("FilmProject.Models.Film", "Film")
+                        .WithMany("FilmDetails")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FilmProject.Models.User", "User")
+                        .WithOne("Ratings")
+                        .HasForeignKey("FilmProject.Models.FilmDetails", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Film");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FilmProject.Models.Film", b =>
+                {
+                    b.Navigation("FilmDetails");
+                });
+
+            modelBuilder.Entity("FilmProject.Models.User", b =>
+                {
+                    b.Navigation("Ratings")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -4,22 +4,24 @@ using System.ComponentModel.DataAnnotations;
 
 public class FilmDetails
 {
-    [Key]
+    [Key] 
     public Guid Id { get; set; }
-    
-    [Required]
+
+    [Required] 
     public Guid UserId { get; set; }
-    
-    [Required]
+
+    [Required] 
     public int MovieId { get; set; }
-    
+
     [Required]
-    [Range(1, 10)]
+    [Range(1, 10)] 
     public double Rating { get; set; }
-    
+
     public string? Note { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-    //User ve Film İlişkilendirmesi şuanda yok bunu eklemenin bir yolunu bul
+    public DateTime UpdateAt { get; set; }
+
+    public User User { get; set; } // foreign key
+    public Film Film { get; set; } // foreign key
 }

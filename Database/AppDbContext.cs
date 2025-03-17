@@ -7,25 +7,26 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-        
     }
+
     public DbSet<Film> Films { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<User> User { get; set; }
-    
+
     public DbSet<FilmDetails> FilmDetails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    { 
-        optionsBuilder.UseNpgsql("User ID=myuser;Password=mypassword;Host=localhost;Port=5432;Database=mydatabase;Pooling=true;Maximum Pool Size=5;");
+    {
+        optionsBuilder.UseNpgsql(
+            "User ID=myuser;Password=mypassword;Host=localhost;Port=5432;Database=mydatabase;Pooling=true;Maximum Pool Size=5;");
     }
-    
-    protected override void OnModelCreating(ModelBuilder modelBuilder)  
-    { 
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<Film>()
-        .HasOne(f => f.Category)
-        .WithMany()
-        .HasForeignKey(f => f.CategoryId);
+            .HasOne(f => f.Category)
+            .WithMany()
+            .HasForeignKey(f => f.CategoryId);
 
         modelBuilder.Entity<Category>().HasData(
             new Category { CategoryId = 1, CategoryName = "Action" },
@@ -35,11 +36,15 @@ public class AppDbContext : DbContext
             new Category { CategoryId = 5, CategoryName = "Romance" }
         );
 
+          modelBuilder.Entity<FilmDetails>()
+            .HasOne(fd => fd.User)
+            .WithOne(u => u.Ratings)
+            .HasForeignKey<FilmDetails>(fd => fd.UserId);
+
         modelBuilder.Entity<FilmDetails>()
-            .HasIndex(fd => new { fd.UserId, fd.MovieId })
-            .IsUnique();
-        
-        // filmDetails user ve film tablosu ile ilişkilendirilmeli
+            .HasOne(fd => fd.Film)
+            .WithMany(f => f.FilmDetails)
+            .HasForeignKey(fd => fd.MovieId);
         
         base.OnModelCreating(modelBuilder);
     }

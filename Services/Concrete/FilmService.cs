@@ -19,7 +19,7 @@ public class FilmService : IFilmService
     {
         return _context.Films.Select(f => new DtoFilteredFilms
         {
-            FilmId = f.Id,
+            FilmId = f.FilmID,
             Title = f.Title,
             Description = f.Description,
             Producer = f.Producer,
@@ -56,7 +56,8 @@ public class FilmService : IFilmService
 
         if (!string.IsNullOrEmpty(dto.MovieName))
         {
-            query = query.OrderBy(f => f.Title.IndexOf(dto.MovieName, StringComparison.OrdinalIgnoreCase)); //index of vedalaşalım artık
+            query = query.OrderBy(f => f.Title.Contains(dto.MovieName) ? 0 : 1)
+                .ThenBy(f => f.Title);
         }
         else
         {
@@ -69,7 +70,7 @@ public class FilmService : IFilmService
 
         return films.Select(f => new DtoFilteredFilms
         {
-            FilmId = f.Id,
+            FilmId = f.FilmID,
             Title = f.Title,
             Description = f.Description,
             Producer = f.Producer,
