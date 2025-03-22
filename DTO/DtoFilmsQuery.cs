@@ -5,7 +5,6 @@ namespace FilmProject.DTO;
 public class DtoFilmsQuery
 {
     public FilterType FilterType { get; set; } = FilterType.None;
-    public int? Year { get; set; }
     public bool SortByMovieName { get; set; }
     public int? MinDuration { get; set; }
     public DateOnly? ReleaseDate { get; set; }

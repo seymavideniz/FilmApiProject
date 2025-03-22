@@ -7,6 +7,4 @@ public class DtoUserReview
     public double Rating { get; set; }
 
     public string? Note { get; set; }
-
-    public DateTime CreatedAt { get; set; }
 }

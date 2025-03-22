@@ -5,8 +5,7 @@ using FilmProject.Services.Abstract;
 
 namespace FilmProject.Services.Concrete;
 
-public class
-    FilmDetailsService : IFilmDetailsService
+public class FilmDetailsService : IFilmDetailsService
 {
     private readonly AppDbContext _context;
 
@@ -41,7 +40,7 @@ public class
                 FilmId = ratingDto.FilmId,
                 Rating = ratingDto.Rating,
                 Note = ratingDto.Note,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.FilmDetails.Add(newRating);

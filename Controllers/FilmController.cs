@@ -10,7 +10,7 @@ namespace FilmProject.Controllers
     [Route("api/films")]
     public class FilmController : ControllerBase
     {
-        private readonly FilmService _filmService;
+        private readonly FilmService _filmService; //IFilmService
 
         public FilmController(FilmService filmService)
         {
@@ -31,9 +31,9 @@ namespace FilmProject.Controllers
         }
 
         [HttpGet("details")]
-        public async Task<IActionResult> GetDetailsFiltered(string filmName)
+        public async Task<IActionResult> GetDetailsFiltered(string filmName) // buranın id alması gerekiyor
         {
-            var filmDetails = _filmService.GetDetailsFiltered(filmName);
+            var filmDetails = _filmService.GetDetailsFiltered(filmName); // id ile çalışması gerekiyor
 
             if (filmDetails == null)
             {

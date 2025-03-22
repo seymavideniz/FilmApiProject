@@ -43,19 +43,19 @@ public class FilmService : IFilmService
 
         if (dto.FilterType == FilterType.Before)
         {
-            query = query.Where(f => f.ReleaseDate.Year <= dto.Year);
+            query = query.Where(f => f.ReleaseDate <= dto.ReleaseDate);
         }
         else if (dto.FilterType == FilterType.After)
         {
-            query = query.Where(f => f.ReleaseDate.Year >= dto.Year);
+            query = query.Where(f => f.ReleaseDate >= dto.ReleaseDate);
         }
-        
+
         if (dto.SortByMovieName)
         {
             query = query.OrderBy(f => f.Title);
         }
 
-        var skipCount = (dto.Page - 1) * dto.PageSize;
+        int skipCount = (dto.Page - 1) * dto.PageSize;
         var films = query.Skip(skipCount).Take(dto.PageSize).ToList();
 
 
@@ -81,7 +81,7 @@ public class FilmService : IFilmService
 
         if (film == null)
         {
-            return null;
+            return null; // throw new Exception("Film not found");
         }
 
         double averageRating = film.FilmDetails.Any()
@@ -90,9 +90,9 @@ public class FilmService : IFilmService
 
         var userReviews = film.FilmDetails.Select(r => new DtoUserReview
         {
-            UserId = r.UserId,
+            UserId = r.UserId, //User id dönmemeli buraya user name dönmeli
             Rating = r.Rating,
-            Note = r.Note,
+            Note = r.Note
         }).ToList();
 
         return new DtoFilmDetails
@@ -100,17 +100,16 @@ public class FilmService : IFilmService
             FilmId = film.FilmID,
             Title = film.Title,
             Description = film.Description,
-            Cast = film.Cast, 
-            Producer = film.Producer, 
+            Cast = film.Cast,
+            Producer = film.Producer,
             AvgRating = averageRating,
             Duration = film.Duration,
             ReleaseDate = film.ReleaseDate,
-            CategoryId = film.CategoryId, 
-            UserReviews = userReviews,
+            CategoryId = film.CategoryId,
+            UserReviews = userReviews
         };
-
     }
-    
+
     public void AddFilm(DtoAddFilm filmDto)
     {
         var film = new Film
@@ -122,7 +121,7 @@ public class FilmService : IFilmService
             ReleaseDate = filmDto.ReleaseDate,
             Rating = 0,
             Cast = filmDto.Cast,
-            Duration = filmDto.Duration,
+            Duration = filmDto.Duration
         };
 
         _context.Films.Add(film);
