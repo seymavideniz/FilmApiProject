@@ -30,6 +30,19 @@ namespace FilmProject.Controllers
             return Ok(films);
         }
 
+        [HttpGet("details")]
+        public async Task<IActionResult> GetDetailsFiltered(string filmName)
+        {
+            var filmDetails = _filmService.GetDetailsFiltered(filmName);
+
+            if (filmDetails == null)
+            {
+                return NotFound("Film not found");
+            }
+
+            return Ok(filmDetails);
+        }
+        
         [HttpPost]
         public IActionResult AddFilm(DtoAddFilm filmdto)
         {

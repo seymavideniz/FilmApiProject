@@ -18,7 +18,7 @@ public class AppDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(
-            "User ID=myuser;Password=mypassword;Host=localhost;Port=5433;Database=mydatabase;Pooling=true;Maximum Pool Size=5;");
+            "User ID=myuser;Password=mypassword;Host=localhost;Port=5432;Database=mydatabase;Pooling=true;Maximum Pool Size=5;");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

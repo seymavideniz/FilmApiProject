@@ -13,7 +13,7 @@ public class FilmDetails
     public Guid UserId { get; set; }
 
     [Required] 
-    public int MovieId { get; set; }
+    public int FilmId { get; set; }
 
     [Required]
     [Range(1, 10)] 
@@ -22,11 +22,11 @@ public class FilmDetails
     public string? Note { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdateAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     [ForeignKey(nameof(UserId))]
     public User User { get; set; } // foreign key
     
-    [ForeignKey(nameof(MovieId))]
+    [ForeignKey(nameof(FilmId))]
     public Film Film { get; set; } // foreign key
 }

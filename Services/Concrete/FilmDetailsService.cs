@@ -25,20 +25,20 @@ public class
     public void AddRating(DtoAddRating ratingDto)
     {
         var existingRating =
-            _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.MovieId == ratingDto.FilmId);
+            _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.FilmId == ratingDto.FilmId);
 
         if (existingRating != null)
         {
             existingRating.Rating = ratingDto.Rating;
             existingRating.Note = ratingDto.Note;
-            existingRating.UpdateAt = DateTime.UtcNow;
+            existingRating.UpdatedAt = DateTime.UtcNow;
         }
         else
         {
             var newRating = new FilmDetails()
             {
                 UserId = ratingDto.UserId,
-                MovieId = ratingDto.FilmId,
+                FilmId = ratingDto.FilmId,
                 Rating = ratingDto.Rating,
                 Note = ratingDto.Note,
                 CreatedAt = DateTime.UtcNow,

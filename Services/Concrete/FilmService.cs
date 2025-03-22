@@ -3,6 +3,7 @@ using FilmProject.DTO;
 using FilmProject.Enum;
 using FilmProject.Models;
 using FilmProject.Services.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace FilmProject.Services.Concrete;
 
@@ -48,7 +49,7 @@ public class FilmService : IFilmService
         {
             query = query.Where(f => f.ReleaseDate.Year >= dto.Year);
         }
-
+        
         if (dto.SortByMovieName)
         {
             query = query.OrderBy(f => f.Title);
@@ -72,7 +73,44 @@ public class FilmService : IFilmService
         }).ToList();
     }
 
+    public DtoFilmDetails GetDetailsFiltered(string filmName)
+    {
+        var film = _context.Films
+            .Include(f => f.FilmDetails)
+            .FirstOrDefault(f => f.Title == filmName);
 
+        if (film == null)
+        {
+            return null;
+        }
+
+        double averageRating = film.FilmDetails.Any()
+            ? film.FilmDetails.Average(r => r.Rating)
+            : 0;
+
+        var userReviews = film.FilmDetails.Select(r => new DtoUserReview
+        {
+            UserId = r.UserId,
+            Rating = r.Rating,
+            Note = r.Note,
+        }).ToList();
+
+        return new DtoFilmDetails
+        {
+            FilmId = film.FilmID,
+            Title = film.Title,
+            Description = film.Description,
+            Cast = film.Cast, 
+            Producer = film.Producer, 
+            AvgRating = averageRating,
+            Duration = film.Duration,
+            ReleaseDate = film.ReleaseDate,
+            CategoryId = film.CategoryId, 
+            UserReviews = userReviews,
+        };
+
+    }
+    
     public void AddFilm(DtoAddFilm filmDto)
     {
         var film = new Film
