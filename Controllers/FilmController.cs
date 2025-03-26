@@ -1,7 +1,5 @@
 using FilmProject.DTO;
-using FilmProject.Services;
 using Microsoft.AspNetCore.Mvc;
-using FilmProject.Enum;
 using FilmProject.Services.Concrete;
 
 namespace FilmProject.Controllers
@@ -31,9 +29,9 @@ namespace FilmProject.Controllers
         }
 
         [HttpGet("details")]
-        public async Task<IActionResult> GetDetailsFiltered(string filmName) // buranın id alması gerekiyor
+        public async Task<IActionResult> GetDetailsFiltered(int FilmId)
         {
-            var filmDetails = _filmService.GetDetailsFiltered(filmName); // id ile çalışması gerekiyor
+            var filmDetails = _filmService.GetDetailsFiltered(FilmId);
 
             if (filmDetails == null)
             {
@@ -42,7 +40,7 @@ namespace FilmProject.Controllers
 
             return Ok(filmDetails);
         }
-        
+
         [HttpPost]
         public IActionResult AddFilm(DtoAddFilm filmdto)
         {
@@ -62,6 +60,35 @@ namespace FilmProject.Controllers
         {
             _filmService.DeleteFilm(id);
             return Ok("Film deleted successfully.");
+        }
+        
+        [HttpPut("mark-watched/{filmId}")]
+        public IActionResult MarkAsWatched(int filmId, [FromQuery] Guid userId)
+        {
+            var result = _filmService.MarkAsWatched(filmId, userId);
+
+            if (result)
+            {
+                return Ok("Film marked as watched.");
+            }
+            else
+            {
+                return NotFound("Film not found for the user.");
+            }
+        }
+        
+        [HttpGet("watchlist")]
+        public ActionResult<List<DtoFilmDetails>> GetWatchlist([FromQuery] Guid userId)
+        {
+            try
+            {
+                var watchlist = _filmService.GetWatchlist(userId);
+                return Ok(watchlist);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

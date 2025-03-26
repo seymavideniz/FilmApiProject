@@ -2,7 +2,6 @@ using FilmProject.Database;
 using FilmProject.DTO;
 using FilmProject.Enum;
 using FilmProject.Models;
-using FilmProject.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace FilmProject.Services.Concrete;
@@ -58,7 +57,6 @@ public class FilmService : IFilmService
         int skipCount = (dto.Page - 1) * dto.PageSize;
         var films = query.Skip(skipCount).Take(dto.PageSize).ToList();
 
-
         return films.Select(f => new DtoFilteredFilms
         {
             FilmId = f.FilmID,
@@ -73,15 +71,16 @@ public class FilmService : IFilmService
         }).ToList();
     }
 
-    public DtoFilmDetails GetDetailsFiltered(string filmName)
+    public DtoFilmDetails GetDetailsFiltered(int filmId)
     {
         var film = _context.Films
             .Include(f => f.FilmDetails)
-            .FirstOrDefault(f => f.Title == filmName);
+            .ThenInclude(fd => fd.User)
+            .FirstOrDefault(f => f.FilmID == filmId);
 
         if (film == null)
         {
-            return null; // throw new Exception("Film not found");
+            throw new Exception("Film not found");
         }
 
         double averageRating = film.FilmDetails.Any()
@@ -90,7 +89,7 @@ public class FilmService : IFilmService
 
         var userReviews = film.FilmDetails.Select(r => new DtoUserReview
         {
-            UserId = r.UserId, //User id dönmemeli buraya user name dönmeli
+            UserName = r.User.UserName,
             Rating = r.Rating,
             Note = r.Note
         }).ToList();
@@ -142,13 +141,13 @@ public class FilmService : IFilmService
         filmToUpdate.ReleaseDate = newFilm.ReleaseDate;
         filmToUpdate.Cast = newFilm.Cast;
         filmToUpdate.Producer = newFilm.Producer;
-
         filmToUpdate.CategoryId = newFilm.CategoryId;
 
         _context.Update(filmToUpdate);
         _context.SaveChanges();
     }
-
+    
+    
     public void DeleteFilm(int id)
     {
         var film = _context.Films.Find(id);
@@ -161,9 +160,48 @@ public class FilmService : IFilmService
         _context.SaveChanges();
     }
 
-
     public List<Category> GetCategoriesByIds(List<int> categoryIds)
     {
         return _context.Categories.Where(c => categoryIds.Contains(c.CategoryId)).ToList();
+    }
+    
+    public bool MarkAsWatched(int filmId, Guid userId)
+    {
+        var filmDetail = _context.FilmDetails
+            .FirstOrDefault(fd => fd.FilmId == filmId && fd.UserId == userId);
+    
+        if (filmDetail != null)
+        {
+            filmDetail.Watched = true;
+            filmDetail.UpdatedAt = DateTime.UtcNow;
+
+            _context.SaveChanges();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public List<DtoFilmDetails> GetWatchlist(Guid userId)
+    {
+        var watchlist = _context.FilmDetails
+            .Where(fd => fd.UserId == userId && fd.Watched == true)
+            .Select(fd => new DtoFilmDetails
+            {
+                FilmId = fd.Film.FilmID,
+                Title = fd.Film.Title,
+                Description = fd.Film.Description,
+                AvgRating = fd.Film.FilmDetails.Any() 
+                    ? fd.Film.FilmDetails.Average(r => r.Rating) 
+                    : 0,
+                CategoryId = fd.Film.CategoryId,
+                Cast = fd.Film.Cast,
+                Producer = fd.Film.Producer,
+                Duration = fd.Film.Duration,
+                ReleaseDate = fd.Film.ReleaseDate
+            }).ToList();
+
+        return watchlist;
     }
 }
