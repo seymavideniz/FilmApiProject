@@ -8,7 +8,7 @@ namespace FilmProject.Controllers
     [Route("api/films")]
     public class FilmController : ControllerBase
     {
-        private readonly FilmService _filmService; //IFilmService
+        private readonly FilmService _filmService; //IFilmService  BURASI UNUTULMUŞ IFILMSERVICE OLACAK
 
         public FilmController(FilmService filmService)
         {

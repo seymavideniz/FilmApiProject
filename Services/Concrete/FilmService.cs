@@ -178,7 +178,7 @@ public class FilmService : IFilmService
             _context.SaveChanges();
             return true;
         }
-        else
+        else // else gereksiz zaten yukarıda return var ve film detail null gelebilir bu göz önünde bulundurulmalı
         {
             return false;
         }
