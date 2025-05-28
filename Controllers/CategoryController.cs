@@ -9,8 +9,6 @@ namespace FilmProject.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-
-
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
@@ -23,49 +21,66 @@ public class CategoryController : ControllerBase
     [HttpGet]
     public IActionResult GetAllCategories()
     {
-        var categories = _categoryService.GetAllCategories();
-        var categoryDtos = categories.Select(c => new DtoCategory
-        {
-            Id = c.CategoryId,
-            Name = c.CategoryName,
-        }).ToList();
+        var result = _categoryService.GetAllCategories();
 
-        return Ok(categoryDtos);
+        if (!string.IsNullOrEmpty(result.Error))
+        {
+            if (result.Error == "CategoryNotFound")
+                return NotFound(result);
+
+            return BadRequest(result);
+        }
+
+        return Ok(result);
     }
+
 
     [HttpGet("{id}")]
-    public ActionResult GetCategory(int id)
+    public IActionResult GetCategory(int id)
     {
-        var category = _categoryService.GetCategoryById(id);
+        var result = _categoryService.GetCategoryById(id);
 
-        var categoryDto = new DtoCategory
+        if (!string.IsNullOrEmpty(result.Error))
         {
-            Id = category.CategoryId,
-            Name = category.CategoryName
-        };
+            if (result.Error == "CategoryNotFound")
+                return NotFound(result);
 
-        return Ok(categoryDto);
+            return BadRequest(result);
+        }
+
+        return Ok(result);
     }
+
 
     [HttpPost]
     public ActionResult AddCategory(DtoAddCategory categoryDto)
-    { 
+    {
         var category = new Category
         {
             CategoryName = categoryDto.Name
         };
 
-        _categoryService.AddCategory(category);
-        return Ok("Category added successfully");
+        var result = _categoryService.AddCategory(category);
+
+        if (result.Error != null)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public ActionResult DeleteCategory(int id)
     {
-        var category = _categoryService.GetCategoryById(id);
-        _categoryService.DeleteCategory(category);
-        {
-            return Ok("Category deleted successfully");
-        } 
+        var categoryResult = _categoryService.GetCategoryById(id);
+        if (categoryResult?.Data == null)
+            return NotFound(categoryResult);
+
+        var deleteResult = _categoryService.DeleteCategory(categoryResult.Data);
+        if (!string.IsNullOrEmpty(deleteResult.Error))
+            return BadRequest(deleteResult);
+
+        return Ok(deleteResult);
     }
 }

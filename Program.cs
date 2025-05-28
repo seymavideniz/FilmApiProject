@@ -2,6 +2,7 @@ using FilmProject.Database;
 using FilmProject.Services.Concrete;
 using FilmProject.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
+using FilmProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ builder.Services.AddScoped<IFilmService ,FilmService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService ,CategoryService>();
 builder.Services.AddScoped<IFilmDetailsService, FilmDetailsService>();
+builder.Services.AddHttpClient(); 
+builder.Services.AddScoped<FilmUpdateService>(); 
+
 
 builder.Services.AddDbContext<AppDbContext>(oB =>
 {

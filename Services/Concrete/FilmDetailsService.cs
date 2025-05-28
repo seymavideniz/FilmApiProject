@@ -14,38 +14,76 @@ public class FilmDetailsService : IFilmDetailsService
         _context = context;
     }
 
-    public void AddFilmDetails(FilmDetails filmDetails)
+    public ApiResponse<string> AddFilmDetails(FilmDetails filmDetails)
     {
-        _context.FilmDetails.Add(filmDetails);
-        _context.SaveChanges();
+        try
+        {
+            _context.FilmDetails.Add(filmDetails);
+            _context.SaveChanges();
+
+            return new ApiResponse<string>
+            {
+                Error = null,
+                Message = "Film details added successfully.",
+                Data = "Success"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<string>
+            {
+                Error = "FilmDetailInsertFailed",
+                Message = ex.Message,
+                Data = null
+            };
+        }
     }
 
 
-    public void AddRating(DtoAddRating ratingDto)
+    public ApiResponse<string> AddRating(DtoAddRating ratingDto)
     {
-        var existingRating =
-            _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.FilmId == ratingDto.FilmId);
+        try
+        {
+            var existingRating =
+                _context.FilmDetails.FirstOrDefault(f => f.UserId == ratingDto.UserId && f.FilmId == ratingDto.FilmId);
 
-        if (existingRating != null)
-        {
-            existingRating.Rating = ratingDto.Rating;
-            existingRating.Note = ratingDto.Note;
-            existingRating.UpdatedAt = DateTime.UtcNow;
-        }
-        else
-        {
-            var newRating = new FilmDetails()
+            if (existingRating != null)
             {
-                UserId = ratingDto.UserId,
-                FilmId = ratingDto.FilmId,
-                Rating = ratingDto.Rating,
-                Note = ratingDto.Note,
-                CreatedAt = DateTime.UtcNow
+                existingRating.Rating = ratingDto.Rating;
+                existingRating.Note = ratingDto.Note;
+                existingRating.UpdatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                var newRating = new FilmDetails()
+                {
+                    UserId = ratingDto.UserId,
+                    FilmId = ratingDto.FilmId,
+                    Rating = ratingDto.Rating,
+                    Note = ratingDto.Note,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.FilmDetails.Add(newRating);
+            }
+
+            _context.SaveChanges();
+
+            return new ApiResponse<string>
+            {
+                Error = null,
+                Message = "Rating added successfully.",
+                Data = "Success"
             };
-
-            _context.FilmDetails.Add(newRating);
         }
-
-        _context.SaveChanges();
+        catch (Exception ex)
+        {
+            return new ApiResponse<string>
+            {
+                Error = "Error occurred while adding the rating.",
+                Message = ex.Message,
+                Data = null
+            };
+        }
     }
 }

@@ -1,10 +1,11 @@
 using FilmProject.DTO;
+using FilmProject.Models;
 
 namespace FilmProject.Services.Abstract;
 
 public interface IUserService
 {
-    Task<string> SingUpAsync(DtoSignUp dtoSignUp);
-    Task<string> SignInAsync(DtoSignIn dtoSignIn);
-    Task<string> UpdateUserAsync(Guid userId, DtoUpdateUser dtoUpdateUser);
+    Task<ApiResponse<string>> SingUpAsync(DtoSignUp dtoSignUp);
+    Task<ApiResponse<string>> SignInAsync(DtoSignIn dtoSignIn);
+    Task<ApiResponse<string>> UpdateUserAsync(Guid userId, DtoUpdateUser dtoUpdateUser);
 }
