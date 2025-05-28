@@ -20,7 +20,7 @@ public class UserController : ControllerBase
     {
         var result = await _userService.SingUpAsync(signUpDto);
 
-        if (result == "User created successfully!")
+        if (result.Error == null)
         {
             return Ok(result);
         }
@@ -30,12 +30,13 @@ public class UserController : ControllerBase
         }
     }
 
+
     [HttpPost("signin")]
     public async Task<IActionResult> SignIn([FromBody] DtoSignIn signInDto)
     {
         var result = await _userService.SignInAsync(signInDto);
 
-        if (result == "User sign in successfully")
+        if (result.Error == null)
         {
             return Ok(result);
         }
@@ -46,15 +47,16 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] DtoUpdateUser dtoUpdateUser)
     {
-        // if (!ModelState.IsValid)
-        // {
-        //     return BadRequest(ModelState);
-        // }
-
         var result = await _userService.UpdateUserAsync(id, dtoUpdateUser);
-        if (result == "User not found!")
+
+        if (result.Error != null)
         {
-            return NotFound(result);
+            if (result.Error == "UserNotFound")
+            {
+                return NotFound(result);
+            }
+
+            return BadRequest(result);
         }
 
         return Ok(result);

@@ -15,61 +15,111 @@ public class FilmService : IFilmService
         _context = context;
     }
 
-    public List<DtoFilteredFilms> GetAllFilms()
+    public RetApi<List<DtoFilteredFilms>> GetAllFilms()
     {
-        return _context.Films.Select(f => new DtoFilteredFilms
+        try
         {
-            FilmId = f.FilmID,
-            Title = f.Title,
-            Description = f.Description,
-            Producer = f.Producer,
-            ReleaseDate = f.ReleaseDate,
-            Duration = f.Duration,
-            CategoryId = f.CategoryId,
-            Cast = f.Cast,
-            Rating = f.Rating
-        }).ToList();
+            var films = _context.Films.Select(f => new DtoFilteredFilms
+            {
+                FilmId = f.FilmID,
+                Title = f.Title,
+                Description = f.Description,
+                Producer = f.Producer,
+                ReleaseDate = f.ReleaseDate,
+                Duration = f.Duration,
+                CategoryId = f.CategoryId,
+                Cast = f.Cast,
+                Rating = f.Rating
+            }).ToList();
+
+            if (films.Count == 0)
+            {
+                return new RetApi<List<DtoFilteredFilms>>()
+                {
+                    Error = "FilmNotFound",
+                    Message = "There is no film record in the database.",
+                    Data = null
+                };
+            }
+
+            return new RetApi<List<DtoFilteredFilms>> { Data = films };
+        }
+        catch (Exception ex)
+        {
+            return new RetApi<List<DtoFilteredFilms>>
+            {
+                Error = "FailedToRetrieveFilmList",
+                Message = ex.Message,
+                Data = null
+            };
+        }
     }
 
-    public List<DtoFilteredFilms> GetFilteredFilms(DtoFilmsQuery dto)
+    public RetApi<List<DtoFilteredFilms>> GetFilteredFilms(DtoFilmsQuery dto)
     {
-        var query = _context.Films.AsQueryable();
-
-        if (dto.MinDuration.HasValue)
+        try
         {
-            query = query.Where(f => f.Duration >= dto.MinDuration.Value);
+            var query = _context.Films.AsQueryable();
+
+            if (dto.MinDuration.HasValue)
+            {
+                query = query.Where(f => f.Duration >= dto.MinDuration.Value);
+            }
+
+            if (dto.FilterType == FilterType.Before)
+            {
+                query = query.Where(f => f.ReleaseDate <= dto.ReleaseDate);
+            }
+            else if (dto.FilterType == FilterType.After)
+            {
+                query = query.Where(f => f.ReleaseDate >= dto.ReleaseDate);
+            }
+
+            if (dto.SortByMovieName)
+            {
+                query = query.OrderBy(f => f.Title);
+            }
+
+            int skipCount = (dto.Page - 1) * dto.PageSize;
+            var films = query.Skip(skipCount).Take(dto.PageSize).ToList();
+
+            if (films.Count == 0)
+            {
+                return new RetApi<List<DtoFilteredFilms>>
+                {
+                    Error = "FilmNotFound",
+                    Message = "No film matching the search criteria was found.",
+                    Data = null
+                };
+            }
+
+            var result = films.Select(f => new DtoFilteredFilms
+            {
+                FilmId = f.FilmID,
+                Title = f.Title,
+                Description = f.Description,
+                Producer = f.Producer,
+                ReleaseDate = f.ReleaseDate,
+                Duration = f.Duration,
+                CategoryId = f.CategoryId,
+                Cast = f.Cast,
+                Rating = f.Rating
+            }).ToList();
+
+            return new RetApi<List<DtoFilteredFilms>> { Data = result };
         }
 
-        if (dto.FilterType == FilterType.Before)
+        catch (Exception ex)
         {
-            query = query.Where(f => f.ReleaseDate <= dto.ReleaseDate);
+            return new RetApi<List<DtoFilteredFilms>>
+            {
+                Error = "FilmFilteringFailed",
+                Message = ex.Message,
+                Data = null
+            };
         }
-        else if (dto.FilterType == FilterType.After)
-        {
-            query = query.Where(f => f.ReleaseDate >= dto.ReleaseDate);
-        }
-
-        if (dto.SortByMovieName)
-        {
-            query = query.OrderBy(f => f.Title);
-        }
-
-        int skipCount = (dto.Page - 1) * dto.PageSize;
-        var films = query.Skip(skipCount).Take(dto.PageSize).ToList();
-
-        return films.Select(f => new DtoFilteredFilms
-        {
-            FilmId = f.FilmID,
-            Title = f.Title,
-            Description = f.Description,
-            Producer = f.Producer,
-            ReleaseDate = f.ReleaseDate,
-            Duration = f.Duration,
-            CategoryId = f.CategoryId,
-            Cast = f.Cast,
-            Rating = f.Rating
-        }).ToList();
     }
+
 
     public DtoFilmDetails GetDetailsFiltered(int filmId)
     {
@@ -109,67 +159,135 @@ public class FilmService : IFilmService
         };
     }
 
-    public void AddFilm(DtoAddFilm filmDto)
+    public RetApi<string> AddFilm(DtoAddFilm filmDto)
     {
-        var film = new Film
+        try
         {
-            Title = filmDto.Title,
-            Description = filmDto.Description,
-            CategoryId = filmDto.CategoryId,
-            Producer = filmDto.Producer,
-            ReleaseDate = filmDto.ReleaseDate,
-            Rating = 0,
-            Cast = filmDto.Cast,
-            Duration = filmDto.Duration
-        };
+            var film = new Film
+            {
+                Title = filmDto.Title,
+                Description = filmDto.Description,
+                CategoryId = filmDto.CategoryId,
+                Producer = filmDto.Producer,
+                ReleaseDate = filmDto.ReleaseDate,
+                Rating = 0,
+                Cast = filmDto.Cast,
+                Duration = filmDto.Duration
+            };
 
-        _context.Films.Add(film);
-        _context.SaveChanges();
+            _context.Films.Add(film);
+            _context.SaveChanges();
+
+            return new RetApi<string>
+            {
+                Data = "Success",
+                Error = null,
+                Message = "Film added successfully."
+            };
+        }
+        catch (Exception ex)
+        {
+            return new RetApi<string>
+            {
+                Data = null,
+                Error = ex.Message,
+                Message = "Error occurred while adding the film"
+            };
+        }
     }
 
-    public void UpdateFilm(int id, DtoUpdateFilm newFilm)
+
+    public RetApi<string> UpdateFilm(int id, DtoUpdateFilm newFilm)
     {
         var filmToUpdate = _context.Films.Find(id);
+
         if (filmToUpdate == null)
         {
-            return;
+            return new RetApi<string>
+            {
+                Error = "FilmNotFound",
+                Message = "Update failed.",
+                Data = null
+            };
         }
 
-        filmToUpdate.Title = newFilm.Title;
-        filmToUpdate.Description = newFilm.Description;
-        filmToUpdate.Duration = newFilm.Duration;
-        filmToUpdate.ReleaseDate = newFilm.ReleaseDate;
-        filmToUpdate.Cast = newFilm.Cast;
-        filmToUpdate.Producer = newFilm.Producer;
-        filmToUpdate.CategoryId = newFilm.CategoryId;
-
-        _context.Update(filmToUpdate);
-        _context.SaveChanges();
-    }
-    
-    
-    public void DeleteFilm(int id)
-    {
-        var film = _context.Films.Find(id);
-        if (film == null)
+        try
         {
-            return;
-        }
+            filmToUpdate.Title = newFilm.Title;
+            filmToUpdate.Description = newFilm.Description;
+            filmToUpdate.Duration = newFilm.Duration;
+            filmToUpdate.ReleaseDate = newFilm.ReleaseDate;
+            filmToUpdate.Cast = newFilm.Cast;
+            filmToUpdate.Producer = newFilm.Producer;
+            filmToUpdate.CategoryId = newFilm.CategoryId;
 
-        _context.Films.Remove(film);
-        _context.SaveChanges();
+            _context.Update(filmToUpdate);
+            _context.SaveChanges();
+
+            return new RetApi<string>
+            {
+                Data = "Succes",
+                Message = "Film update successfully.."
+            };
+        }
+        catch (Exception ex)
+        {
+            return new RetApi<string>
+            {
+                Error = ex.Message,
+                Message = "Error occurred while updating the film",
+                Data = null
+            };
+        }
     }
+
+    public RetApi<string> DeleteFilm(int id)
+    {
+        try
+        {
+            var film = _context.Films.Find(id);
+            if (film == null)
+            {
+                return new RetApi<string>
+                {
+                    Error = "FilmToDeleteNotFound",
+                    Message = "No film found with the specified ID.",
+                    Data = null
+                };
+            }
+
+            _context.Films.Remove(film);
+            _context.SaveChanges();
+
+            return new RetApi<string>
+            {
+                Error = null,
+                Message = "Film deleted successfully.",
+                Data = null
+            };
+        }
+        catch (Exception ex)
+        {
+            return new RetApi<string>
+            {
+                Error = "Error",
+                Message = ex.Message,
+                Data = null
+            };
+        }
+    }
+
 
     public List<Category> GetCategoriesByIds(List<int> categoryIds)
     {
         return _context.Categories.Where(c => categoryIds.Contains(c.CategoryId)).ToList();
     }
-    
+
     public bool MarkAsWatched(int filmId, Guid userId)
     {
         var filmDetail = _context.FilmDetails
             .FirstOrDefault(fd => fd.FilmId == filmId && fd.UserId == userId);
-    
+
         if (filmDetail != null)
         {
             filmDetail.Watched = true;
@@ -183,6 +301,7 @@ public class FilmService : IFilmService
             return false;
         }
     }
+
     public List<DtoFilmDetails> GetWatchlist(Guid userId)
     {
         var watchlist = _context.FilmDetails
@@ -192,8 +311,8 @@ public class FilmService : IFilmService
                 FilmId = fd.Film.FilmID,
                 Title = fd.Film.Title,
                 Description = fd.Film.Description,
-                AvgRating = fd.Film.FilmDetails.Any() 
-                    ? fd.Film.FilmDetails.Average(r => r.Rating) 
+                AvgRating = fd.Film.FilmDetails.Any()
+                    ? fd.Film.FilmDetails.Average(r => r.Rating)
                     : 0,
                 CategoryId = fd.Film.CategoryId,
                 Cast = fd.Film.Cast,

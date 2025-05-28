@@ -13,45 +13,111 @@ namespace FilmProject.Services.Concrete
             _context = context;
         }
 
-        public List<Category> GetAllCategories()
+        public RetApi<List<Category>> GetAllCategories()
         {
-            var categories = _context.Categories.ToList();
-            if (categories == null)
+            try
             {
-                return null;
-            }
+                var categories = _context.Categories.ToList();
 
-            return categories;
+                if (categories == null || !categories.Any())
+                {
+                    return new RetApi<List<Category>>
+                    {
+                        Error = "CategoryNotFound",
+                        Message = "No categories were found.",
+                        Data = null
+                    };
+                }
+
+                return new RetApi<List<Category>>
+                {
+                    Error = null,
+                    Message = "Categories retrieved successfully.",
+                    Data = categories
+                };
+            }
+            catch (Exception ex)
+            {
+                return new RetApi<List<Category>>
+                {
+                    Error = "ServerError",
+                    Message = ex.Message,
+                    Data = null
+
+                };
+            }
         }
 
-        public Category GetCategoryById(int id)
+
+        public RetApi<Category> GetCategoryById(int id)
         {
             var category = _context.Categories.FirstOrDefault(c => c.CategoryId == id);
             if (category == null)
             {
-                return null;
+                return new RetApi<Category>
+                {
+                    Error = "Error",
+                    Message = "Category not found.",
+                    Data = null
+                };
             }
 
-            return category;
+            return new RetApi<Category>
+            {
+                Error = null,
+                Message = "Category retrieved successfully.",
+                Data = category
+            };
         }
 
-        public Category AddCategory(Category category)
+        public RetApi<Category> AddCategory(Category category)
         {
-            _context.Categories.Add(category);
-            _context.SaveChanges();
-            return category;
+            try
+            {
+                _context.Categories.Add(category);
+                _context.SaveChanges();
+
+                return new RetApi<Category>
+                {
+                    Error = null,
+                    Message = "Category added successfully.",
+                    Data = category
+                };
+            }
+            catch (Exception ex)
+            {
+                return new RetApi<Category>
+                {
+                    Error = "ErrorAddingCategory",
+                    Message = ex.Message,
+                    Data = null
+                };
+            }
         }
 
-        public void DeleteCategory(Category category)
+
+        public RetApi<string> DeleteCategory(Category category)
         {
             var existCategory = _context.Categories.FirstOrDefault(c => c.CategoryId == category.CategoryId);
             if (existCategory == null)
             {
-                return;
+                return new RetApi<string>
+                {
+                    Error = "CategoryNotFound",
+                    Message = "Category not found.",
+                    Data = null
+                };
             }
 
             _context.Categories.Remove(existCategory);
             _context.SaveChanges();
+
+            return new RetApi<string>
+            {
+                Error = null,
+                Message = "Category deleted successfully.",
+                Data = "Success"
+            };
         }
     }
 }
