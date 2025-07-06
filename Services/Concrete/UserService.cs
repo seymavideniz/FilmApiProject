@@ -15,19 +15,19 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<User?> SignUpAsync(DtoSignUp dtoSignUp)
+    public async Task<string> SingUpAsync(DtoSignUp dtoSignUp)
     {
         var existingUser = await _context.User.FirstOrDefaultAsync(u => u.Email == dtoSignUp.Email);
+
         if (existingUser != null)
         {
-            return null; 
+            return "Email already exists";
         }
 
         var newUser = new User
         {
             FirstName = dtoSignUp.Name,
             LastName = dtoSignUp.LastName,
-            UserName = dtoSignUp.UserName,
             Email = dtoSignUp.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dtoSignUp.Password),
             CreatedAt = DateTime.UtcNow,
@@ -36,47 +36,40 @@ public class UserService : IUserService
         _context.User.Add(newUser);
         await _context.SaveChangesAsync();
 
-        return newUser;
+        return "User created successful!";
     }
 
-    public Task<ApiResponse<string>> SingUpAsync(DtoSignUp dtoSignUp)
+    public async Task<string> SignInAsync(DtoSignIn dtoSignIn)
     {
-        throw new NotImplementedException();
+        var existingUser = await _context.User.FirstOrDefaultAsync(u => u.Email == dtoSignIn.Email);
+
+        if (existingUser == null)
+        {
+            return "Email does not exists";
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(dtoSignIn.Password, existingUser.PasswordHash))
+        {
+            return "Incorrect password";
+        }
+
+        return "Sign in successful!";
     }
 
-    Task<ApiResponse<string>> IUserService.SignInAsync(DtoSignIn dtoSignIn)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<ApiResponse<string>> IUserService.UpdateUserAsync(Guid userId, DtoUpdateUser dtoUpdateUser)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<User?> SignInAsync(DtoSignIn dtoSignIn)
-    {
-        var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dtoSignIn.Email);
-        if (user == null) return null;
-
-        bool passwordValid = BCrypt.Net.BCrypt.Verify(dtoSignIn.Password, user.PasswordHash);
-        if (!passwordValid) return null;
-
-        return user;
-    }
-
-
-    public async Task<bool> UpdateUserAsync(Guid userId, DtoUpdateUser dtoUpdateUser)
+    public async Task<string> UpdateUserAsync(Guid userId, DtoUpdateUser dtoUpdateUser)
     {
         var user = await _context.User.FindAsync(userId);
-        if (user == null) return false;
 
+        if (user == null)
+        {
+            return "User not found!";
+        }
+        
         user.FirstName = dtoUpdateUser.FirstName;
         user.LastName = dtoUpdateUser.LastName;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-
-        return true;
+        return "User updated successfully";
     }
 }

@@ -1,7 +1,6 @@
 using FilmProject.DTO;
 using Microsoft.AspNetCore.Mvc;
 using FilmProject.Services.Concrete;
-using FilmProject.Models;
 
 namespace FilmProject.Controllers
 {
@@ -9,7 +8,7 @@ namespace FilmProject.Controllers
     [Route("api/films")]
     public class FilmController : ControllerBase
     {
-        private readonly IFilmService _filmService;
+        private readonly FilmService _filmService; //IFilmService
 
         public FilmController(FilmService filmService)
         {
@@ -17,25 +16,16 @@ namespace FilmProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ApiResponse<List<DtoFilteredFilms>>> GetAllFilms()
+        public ActionResult<List<DtoFilteredFilms>> GetAllFilms()
         {
-            var result = _filmService.GetAllFilms();
-
-            if (!string.IsNullOrEmpty(result.Error))
-                return NotFound(result);
-
-            return Ok(result);
+            return Ok(_filmService.GetAllFilms());
         }
 
         [HttpGet("filtered")]
-        public ActionResult<ApiResponse<List<DtoFilteredFilms>>> GetFilteredFilms([FromQuery] DtoFilmsQuery filmDto)
+        public ActionResult<List<DtoFilteredFilms>> GetFilteredFilms([FromQuery] DtoFilmsQuery filmDto)
         {
-            var result = _filmService.GetFilteredFilms(filmDto);
-
-            if (!string.IsNullOrEmpty(result.Error))
-                return NotFound(result);
-
-            return Ok(result);
+            var films = _filmService.GetFilteredFilms(filmDto);
+            return Ok(films);
         }
 
         [HttpGet("details")]
@@ -54,40 +44,24 @@ namespace FilmProject.Controllers
         [HttpPost]
         public IActionResult AddFilm(DtoAddFilm filmdto)
         {
-            var result = _filmService.AddFilm(filmdto);
-
-            if (!string.IsNullOrEmpty(result.Error))
-            {
-                return BadRequest(result);
-            }
-
-            return Ok(result);
+            _filmService.AddFilm(filmdto);
+            return Ok("Film added successfully");
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] DtoUpdateFilm filmdto)
         {
-            var result = _filmService.UpdateFilm(id, filmdto);
-            if (!string.IsNullOrEmpty(result.Error))
-            {
-                return NotFound(result);
-            }
-
-            return Ok(result);
+            _filmService.UpdateFilm(id, filmdto);
+            return Ok("Film updated.");
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = _filmService.DeleteFilm(id);
-            if (!string.IsNullOrEmpty(result.Error))
-            {
-                return NotFound(result);
-            }
-
-            return Ok(result);
+            _filmService.DeleteFilm(id);
+            return Ok("Film deleted successfully.");
         }
-
+        
         [HttpPut("mark-watched/{filmId}")]
         public IActionResult MarkAsWatched(int filmId, [FromQuery] Guid userId)
         {
@@ -102,7 +76,7 @@ namespace FilmProject.Controllers
                 return NotFound("Film not found for the user.");
             }
         }
-
+        
         [HttpGet("watchlist")]
         public ActionResult<List<DtoFilmDetails>> GetWatchlist([FromQuery] Guid userId)
         {

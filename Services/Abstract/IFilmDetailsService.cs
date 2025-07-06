@@ -5,7 +5,7 @@ namespace FilmProject.Services.Abstract;
 
 public interface IFilmDetailsService
 {
-    ApiResponse<string> AddFilmDetails(FilmDetails filmDetails);
+    void AddFilmDetails(FilmDetails filmDetails);
 
-    ApiResponse<string> AddRating(DtoAddRating ratingDto);
+    void AddRating(DtoAddRating ratingDto);
 }

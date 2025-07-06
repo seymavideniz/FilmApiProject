@@ -14,14 +14,14 @@ public class FilmDetailsService : IFilmDetailsService
         _context = context;
     }
 
-    public ApiResponse<string> AddFilmDetails(FilmDetails filmDetails)
+    public RetApi<string> AddFilmDetails(FilmDetails filmDetails)
     {
         try
         {
             _context.FilmDetails.Add(filmDetails);
             _context.SaveChanges();
 
-            return new ApiResponse<string>
+            return new RetApi<string>
             {
                 Error = null,
                 Message = "Film details added successfully.",
@@ -30,7 +30,7 @@ public class FilmDetailsService : IFilmDetailsService
         }
         catch (Exception ex)
         {
-            return new ApiResponse<string>
+            return new RetApi<string>
             {
                 Error = "FilmDetailInsertFailed",
                 Message = ex.Message,
@@ -40,7 +40,7 @@ public class FilmDetailsService : IFilmDetailsService
     }
 
 
-    public ApiResponse<string> AddRating(DtoAddRating ratingDto)
+    public RetApi<string> AddRating(DtoAddRating ratingDto)
     {
         try
         {
@@ -69,7 +69,7 @@ public class FilmDetailsService : IFilmDetailsService
 
             _context.SaveChanges();
 
-            return new ApiResponse<string>
+            return new RetApi<string>
             {
                 Error = null,
                 Message = "Rating added successfully.",
@@ -78,7 +78,7 @@ public class FilmDetailsService : IFilmDetailsService
         }
         catch (Exception ex)
         {
-            return new ApiResponse<string>
+            return new RetApi<string>
             {
                 Error = "Error occurred while adding the rating.",
                 Message = ex.Message,
