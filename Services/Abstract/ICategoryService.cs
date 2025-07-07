@@ -1,10 +1,11 @@
 using FilmProject.Models;
+
 namespace FilmProject.Services.Abstract;
 
 public interface ICategoryService
 {
-    List<Category> GetAllCategories();
-    Category GetCategoryById(int id);
-    Category AddCategory(Category category);
-    void DeleteCategory(Category category);
+    ApiResponse<List<Category>> GetAllCategories();
+    ApiResponse<Category> GetCategoryById(int id);
+    ApiResponse<Category> AddCategory(Category category);
+    ApiResponse<string> DeleteCategory(Category category);
 }

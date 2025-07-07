@@ -16,6 +16,8 @@ namespace FilmProject.Models
         public Category Category { get; set; }
         
         public ICollection<FilmDetails> FilmDetails { get; set; }  
-
+        
+        public int TmdbId { get; set; }
+        
     }
 }
